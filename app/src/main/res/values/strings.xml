@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SaveIt</string>
+    <string name="title_activity_nueva_categoria">NuevaCategoria</string>
+    <string name="titulo_nueva_categoria">NuevaCategoria</string>
+    <!--Seccion de nombres para la adicion de nuevos elementos-->
+    <string name="nombre_categoria">Nombre de la categoria</string>
+    <string name="imagen_categoria">Seleccione imagen</string>
+    <string name="agregar">Agregar</string>
+</resources>
