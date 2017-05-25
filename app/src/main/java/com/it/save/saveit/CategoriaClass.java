@@ -19,7 +19,6 @@ public class CategoriaClass
         this.image=image;
         this.categoria=categoria;
         this.id=id;
-        //db = new DatabaseHelper(MainActivity.getmContext());
     }
 
     public String getCategoria() {

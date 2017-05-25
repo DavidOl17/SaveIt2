@@ -58,4 +58,8 @@ public class CategoriaAdministradora
         db.deleteCategoria(CargaLibros().get(pos).getCategoria());
         db.closeDB();
     }
+    public String getCategoria(int pos)
+    {
+        return CargaLibros().get(pos).getCategoria();
+    }
 }

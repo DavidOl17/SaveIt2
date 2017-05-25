@@ -10,6 +10,8 @@ import android.widget.Toast;
 import com.it.save.saveit.CategoriaClass;
 import com.it.save.saveit.MainActivity;
 import com.it.save.saveit.R;
+import com.it.save.saveit.notas.texto.NotasDeTextoClass;
+//import com.it.save.saveit.notas_de_texto.NotasDeTextoClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,4 +218,114 @@ public class DatabaseHelper extends SQLiteOpenHelper
             return true;
         return false;
     }
+
+    // ------------------------ Acciones para la tabla de notas de texto ----------------//
+
+    public long insertarNotaDeTexto(NotasDeTextoClass notasDeTextoClass) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TITULO_NOTA, notasDeTextoClass.getTitulo());
+        values.put(TIPO, 0);
+        values.put(ID_CATEGORIA, notasDeTextoClass.getCategoria());
+
+        // insert row
+        long idObtenido = db.insert(TABLE_NOTA, null, values);
+        values = new ContentValues();
+        values.put(KEY_ID,lastID());
+        values.put(TEXTO_CUERPO,notasDeTextoClass.getTexto());
+        idObtenido = db.insert(TABLE_NOTA_TEXTO, null, values);
+        return idObtenido;
+    }
+
+    public int lastID() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_NOTA;
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToLast();
+
+         int id = c.getInt(0);
+
+        return id;
+    }
+
+    public NotasDeTextoClass getNotasDeTextoClass(String tituloNota) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_NOTA_TEXTO + " WHERE "
+                + TITULO_NOTA + " = '" + tituloNota+"'";
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        NotasDeTextoClass notasDeTextoClass = new NotasDeTextoClass(c.getInt(0),tituloNota,c.getString(1));
+
+        return notasDeTextoClass;
+    }
+
+    public Vector<NotasDeTextoClass> getTodasLasNotasDeTexto(String categoria)
+    {
+        Vector<NotasDeTextoClass> vectorNotas = new Vector<NotasDeTextoClass>();
+        String selectQuery = "SELECT  " + TABLE_NOTA + "." + KEY_ID + ", " + TABLE_NOTA + "." + TITULO_NOTA + ", "
+                + TABLE_NOTA_TEXTO + "." + TEXTO_CUERPO + " FROM " + TABLE_NOTA + ", " + TABLE_NOTA_TEXTO
+                + " WHERE " + TABLE_NOTA + "." + ID_CATEGORIA + "='" + categoria + "' AND " + TABLE_NOTA_TEXTO + "." + KEY_ID + " = "
+                + TABLE_NOTA + "." + KEY_ID + " GROUP BY " + TABLE_NOTA + "." + KEY_ID;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                NotasDeTextoClass notasDeTextoClass = new NotasDeTextoClass(c.getInt(0), c.getString(1), c.getString(2));
+                vectorNotas.add(notasDeTextoClass);
+            } while (c.moveToNext());
+        }
+
+        return vectorNotas;
+    }
+    public int updateNotaDeTexto(NotasDeTextoClass notasDeTextoClass) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TITULO_NOTA, notasDeTextoClass.getTitulo());
+        // updating row
+         db.update(TABLE_NOTA, values, KEY_ID + " = ?",
+                new String[] { String.valueOf(notasDeTextoClass.getId())});
+
+        values.put(TEXTO_CUERPO, notasDeTextoClass.getTexto());
+        // updating row
+        db.update(TABLE_NOTA_TEXTO, values, KEY_ID + " = ?",
+                new String[] { String.valueOf(notasDeTextoClass.getId())});
+        return 0;
+    }
+
+    public void deleteNotaTexto(int idNotaTexto)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NOTA,  KEY_ID + " = ?",
+                new String[] { String.valueOf(idNotaTexto) });
+        db.delete(TABLE_NOTA_TEXTO, KEY_ID + " = ?",
+                new String[] { String.valueOf(idNotaTexto) });
+    }
+
+    public int getNotasDeTextoCount(String cate)
+    {
+        int count=0;
+        try
+        {
+            String countQuery = "SELECT  * FROM " + TABLE_NOTA+" WHERE "+ID_CATEGORIA+" = '"+cate+"'";
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(countQuery, null);
+
+            count = cursor.getCount();
+            cursor.close();
+        }catch (Exception e)
+        {
+            count=0;
+        }
+
+        // return count
+        return count;
+    }
+
 }

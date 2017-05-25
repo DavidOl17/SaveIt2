@@ -13,6 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
+//import com.it.save.saveit.notas_de_texto.AplicacionNotasDeTexto;
+//import com.it.save.saveit.notas_de_texto.NotasDeTexto;
+import com.it.save.saveit.notas.texto.NotasTexto;
 import com.it.save.saveit.sqlite.model.CategoriaAdministradora;
 
 public class MainActivity extends AppCompatActivity
@@ -31,7 +34,6 @@ public class MainActivity extends AppCompatActivity
         recyclerView = new RecyclerView(MainActivity.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toast.makeText(MainActivity.this,"No mame si entro",Toast.LENGTH_SHORT).show();
         mContext=this;
         final Categoria app =(Categoria)getApplication();
         recyclerView=(RecyclerView) findViewById(R.id.recyclei_view);
@@ -43,6 +45,12 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 Toast.makeText(MainActivity.this,"Seleccionando el elemento: "+ recyclerView.getChildAdapterPosition(v),Toast.LENGTH_SHORT).show();
+                Intent notasTexto = new Intent(MainActivity.this, NotasTexto.class);
+                Bundle b = new Bundle();
+                CategoriaAdministradora categoriaAdministradora = new CategoriaAdministradora(MainActivity.this);
+                b.putString("categoria", categoriaAdministradora.getCategoria(recyclerView.getChildAdapterPosition(v))); //Your id
+                notasTexto.putExtras(b);
+                startActivity(notasTexto);
             }
         });
         app.getAdaptador().setOnItemLongClickListener(new View.OnLongClickListener(){
