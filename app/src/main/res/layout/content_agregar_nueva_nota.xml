@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.it.save.saveit.notas.texto.operaciones.AgregarNuevaNota"
+    tools:showIn="@layout/activity_agregar_nueva_nota">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/fondo_nota"
+            android:scaleType="centerCrop"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/layout_titulo_nueva_nota_texto"
+        android:orientation="horizontal">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/txt_titulo_nueva_nota"
+            android:textSize="30dp"
+            android:hint="Escriba su titulo"
+            android:fontFamily="serif-monospace"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/txt_cuerpo_nota_texto"
+        android:orientation="horizontal"
+        android:layout_below="@id/layout_titulo_nueva_nota_texto">
+        <com.it.save.saveit.notas.texto.edit.text.EditTextPropio
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/txt_cuerpo_nueva_nota"
+            android:gravity="top|left"
+            android:textSize="20dp"
+            android:fontFamily="sans-serif-condensed"
+            />
+    </LinearLayout>
+
+</RelativeLayout>

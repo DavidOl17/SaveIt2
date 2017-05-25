@@ -29,18 +29,20 @@ public class MainActivity extends AppCompatActivity
 
     private static Context mContext;
     FloatingActionButton myFab;
+    CategoriaAdministradora categoriaAdministradora;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         recyclerView = new RecyclerView(MainActivity.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext=this;
-        final Categoria app =(Categoria)getApplication();
+        categoriaAdministradora = new CategoriaAdministradora(MainActivity.this);
+        //final Categoria app =(Categoria)getApplication();
         recyclerView=(RecyclerView) findViewById(R.id.recyclei_view);
-        recyclerView.setAdapter(app.getAdaptador());
+        recyclerView.setAdapter(categoriaAdministradora.getAdaptador());
         layoutManager=new GridLayoutManager(this,2);
         recyclerView.setLayoutManager(layoutManager);
-        app.getAdaptador().setOnItemClickListener(new View.OnClickListener(){
+        categoriaAdministradora.getAdaptador().setOnItemClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v)
             {
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(notasTexto);
             }
         });
-        app.getAdaptador().setOnItemLongClickListener(new View.OnLongClickListener(){
+        categoriaAdministradora.getAdaptador().setOnItemLongClickListener(new View.OnLongClickListener(){
             public boolean onLongClick(final View v)
             {
                 final int id=recyclerView.getChildAdapterPosition(v);
@@ -68,14 +70,14 @@ public class MainActivity extends AppCompatActivity
                             case 0:
                                 finish();
                                 startActivity(getIntent());
-                                app.getAdaptador().notifyDataSetChanged();
+                                //categoriaAdministradora.getAdaptador().notifyDataSetChanged();
                                 break;
                             case 1:
                                 CategoriaAdministradora categoriaAdministradora = new CategoriaAdministradora(MainActivity.this);
                                 categoriaAdministradora.EliminaCategoria(id);
                                 finish();
                                 startActivity(getIntent());
-                                app.getAdaptador().notifyDataSetChanged();
+                                //categoriaAdministradora.getAdaptador().notifyDataSetChanged();
                                 break;
                         }
                     }

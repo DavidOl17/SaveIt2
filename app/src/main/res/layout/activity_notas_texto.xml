@@ -1,28 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.it.save.saveit.notas.texto.NotasTexto">
 
-    <android.support.v7.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/recycler_view_notas_texto"
-        android:scrollbars="vertical"
-        android:background="#ffffff" />
-
-
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingButton"
+        android:id="@+id/floatingButtonAddNota"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@android:drawable/ic_input_add"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        app:backgroundTint="#FFFFFF"
-        tools:layout_editor_absoluteY="470dp"
-        tools:layout_editor_absoluteX="341dp" />
-</android.support.constraint.ConstraintLayout>
+        app:backgroundTint="#FFFFFF" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="vertical"
+        android:id="@+id/layout_titulo">
+
+        <TextView
+            android:id="@+id/titulo_categoria"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="22dp"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-condensed"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/layout_titulo"
+        android:layout_marginTop="5dp">
+        <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recycler_view_notas_texto"
+            android:scrollbars="vertical"
+            android:background="#ffffff"
+            tools:layout_editor_absoluteY="8dp"
+            tools:layout_editor_absoluteX="8dp" />
+    </LinearLayout>
+
+</RelativeLayout>

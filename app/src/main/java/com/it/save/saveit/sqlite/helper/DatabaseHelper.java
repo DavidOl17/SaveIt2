@@ -298,6 +298,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 new String[] { String.valueOf(notasDeTextoClass.getId())});
         return 0;
     }
+    public int updateCategoriaNota(String categoria) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ID_CATEGORIA, "Sin categoria");
+        db.update(TABLE_NOTA, values, ID_CATEGORIA + " = ?",
+                new String[] { String.valueOf(categoria)});
+        return 0;
+    }
 
     public void deleteNotaTexto(int idNotaTexto)
     {
@@ -306,6 +314,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 new String[] { String.valueOf(idNotaTexto) });
         db.delete(TABLE_NOTA_TEXTO, KEY_ID + " = ?",
                 new String[] { String.valueOf(idNotaTexto) });
+    }
+    public void deleteNotaTextoSinCategoria(int idNotaTexto)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ID_CATEGORIA, "Papelera de reciclaje");
+        db.update(TABLE_NOTA, values, KEY_ID + " = ?",
+                new String[] { String.valueOf(idNotaTexto)});
     }
 
     public int getNotasDeTextoCount(String cate)

@@ -29,17 +29,33 @@ public class NotasDeTextoAdministradora
         notasDeTextoClasses = db.getTodasLasNotasDeTexto(categoria);
         return  notasDeTextoClasses;
     }
-    public void InsertarCategoria(NotasDeTextoClass notasDeTextoClass)
+    public void InsertarNotaTexto(NotasDeTextoClass notasDeTextoClass)
     {
         db.insertarNotaDeTexto(notasDeTextoClass);
         db.closeDB();
     }
-    public void EliminaCategoria(int id)
+    public boolean EliminaNotaTexto(int id)
     {
-        db.deleteNotaTexto(id);
-        db.closeDB();
+        try
+        {
+            db.deleteNotaTextoSinCategoria(id);
+            db.closeDB();
+        }
+        catch (Exception e)
+        {return false;}
+        return true;
     }
-
+    public boolean EliminaNotaTextoDefinitivo(int id)
+    {
+        try
+        {
+            db.deleteNotaTexto(id);
+            db.closeDB();
+        }
+        catch (Exception e)
+        {return false;}
+        return true;
+    }
     public Vector<NotasDeTextoClass> getNotasTexto(){return notasTexto;}
     public AdaptadorNotasDeTexto getAdaptador(){return adaptador;}
 }

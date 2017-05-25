@@ -23,8 +23,12 @@
         <activity
             android:name=".NuevaCategoria"
             android:label="@string/title_activity_nueva_categoria"
-            android:theme="@style/AppTheme.NoActionBar" />s
-        <activity android:name=".notas.texto.NotasTexto"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".notas.texto.NotasTexto" />
+        <activity
+            android:name=".notas.texto.operaciones.AgregarNuevaNota"
+            android:label="@string/title_activity_agregar_nueva_nota"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.it.save.saveit;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,8 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,6 +55,8 @@ public class NuevaCategoria extends AppCompatActivity {
         txtNombreCategoria=(EditText)findViewById(R.id.txtNombreCategoria);
         imgSelected.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                pidePermisosEscritura();
+                pidePermisosLectura();
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
 
                 // where do we want to find the data?
@@ -147,7 +152,39 @@ public class NuevaCategoria extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this,"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
+    }
+    private void pidePermisosEscritura()
+    {
+        if (ContextCompat.checkSelfPermission(NuevaCategoria.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
 
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(NuevaCategoria.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            {
 
+            } else {
+                ActivityCompat.requestPermissions(NuevaCategoria.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+            }
+        }
+    }
+    private void pidePermisosLectura()
+    {
+        if (ContextCompat.checkSelfPermission(NuevaCategoria.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(NuevaCategoria.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE))
+            {
+
+            } else {
+                ActivityCompat.requestPermissions(NuevaCategoria.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},0);
+            }
+        }
     }
 }

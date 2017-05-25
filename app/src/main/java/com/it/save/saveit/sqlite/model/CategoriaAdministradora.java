@@ -1,10 +1,9 @@
 package com.it.save.saveit.sqlite.model;
 
 import android.content.Context;
-import android.widget.Toast;
 
+import com.it.save.saveit.AdaptadorCategorias;
 import com.it.save.saveit.CategoriaClass;
-import com.it.save.saveit.MainActivity;
 import com.it.save.saveit.R;
 import com.it.save.saveit.sqlite.helper.DatabaseHelper;
 
@@ -16,12 +15,16 @@ import java.util.Vector;
 
 public class CategoriaAdministradora
 {
+    private Vector<CategoriaClass> categorias;
+    private AdaptadorCategorias adaptador;
     public DatabaseHelper db;
     Context aux;
     public CategoriaAdministradora(Context context)
     {
         db = new DatabaseHelper(context);
         aux=context;
+        categorias=CargaLibros();
+        adaptador=new AdaptadorCategorias(context,categorias);
     }
     public Vector<CategoriaClass> CargaLibros()
     {
@@ -53,13 +56,29 @@ public class CategoriaAdministradora
         db.insertarCategoria(categoria);
         db.closeDB();
     }
-    public void EliminaCategoria(int pos)
+    public String EliminaCategoria(int pos)
     {
-        db.deleteCategoria(CargaLibros().get(pos).getCategoria());
-        db.closeDB();
+        String categ =CargaLibros().get(pos).getCategoria();
+        if(!categ.equals("Sin categoria") && !categ.equals("Papelera de reciclaje"))
+        {
+            db.updateCategoriaNota(categ);
+            db.deleteCategoria(CargaLibros().get(pos).getCategoria());
+            db.closeDB();
+        }
+        else
+            return "La categoria no se puede eliminar";
+        return "Eliminado exitosamente";
     }
     public String getCategoria(int pos)
     {
         return CargaLibros().get(pos).getCategoria();
+    }
+
+    public Vector<CategoriaClass> getCategorias() {
+        return categorias;
+    }
+    public AdaptadorCategorias getAdaptador()
+    {
+        return adaptador;
     }
 }

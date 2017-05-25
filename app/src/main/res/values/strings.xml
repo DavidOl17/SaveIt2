@@ -7,4 +7,5 @@
     <string name="imagen_categoria">Seleccione imagen</string>
     <string name="agregar">Agregar</string>
     <string name="title_activity_notas_de_texto">NotasDeTexto</string>
+    <string name="title_activity_agregar_nueva_nota">AgregarNuevaNota</string>
 </resources>
