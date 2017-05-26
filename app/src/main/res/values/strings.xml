@@ -8,4 +8,6 @@
     <string name="agregar">Agregar</string>
     <string name="title_activity_notas_de_texto">NotasDeTexto</string>
     <string name="title_activity_agregar_nueva_nota">AgregarNuevaNota</string>
+    <string name="title_activity_notas_multimedia">NotasMultimedia</string>
+    <string name="title_activity_agregar_nota_multimedia">AgregarNotaMultimedia</string>
 </resources>

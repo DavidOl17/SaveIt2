@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.it.save.saveit.notas.texto.operaciones.AgregarNuevaNota">
+    tools:context="com.it.save.saveit.notas.multimedia.operaciones.AgregarNotaMultimedia">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -20,15 +20,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_agregar_nueva_nota" />
+    <include layout="@layout/content_agregar_nota_multimedia" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_notas_texto"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/fab_multimedia"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="#FFFFFF"
+        android:backgroundTint="#FFFFFF"
+        android:text="Agregar"
         app:srcCompat="@android:drawable/ic_input_add" />
 
 </android.support.design.widget.CoordinatorLayout>

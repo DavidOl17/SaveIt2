@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.it.save.saveit.seleccion_tipo_nota.SeleccionTipoNota">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layout_seleccion_tipo_nota"
+        android:orientation="horizontal"
+        android:layout_above="@+id/layout_margen"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
+            android:src="@mipmap/notas_texto_ico"
+            android:scaleType="centerCrop"
+            android:id="@+id/seleccion_texto"/>
+        <ImageView
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
+            android:src="@mipmap/notas_multimedia_ico"
+            android:scaleType="centerCrop"
+            android:id="@+id/seleccion_multimedia"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:id="@+id/layout_margen"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
+
+    </LinearLayout>
+</RelativeLayout>

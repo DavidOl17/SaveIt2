@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.it.save.saveit.R;
 import com.it.save.saveit.notas.texto.operaciones.AgregarNuevaNota;
+import com.it.save.saveit.notas.texto.operaciones.EditarNota;
 
 public class NotasTexto extends AppCompatActivity {
 
@@ -60,7 +61,13 @@ public class NotasTexto extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(NotasTexto.this,"En proceso", Toast.LENGTH_SHORT).show();
+                final int id=recyclerView.getChildAdapterPosition(v);
+                Intent intent = new Intent(NotasTexto.this,EditarNota.class);
+                Bundle b = new Bundle();
+                b.putInt("id",adminNotasTexto.CargaNotasDeTexto(categoria).elementAt(id).getId()); //Your id
+                intent.putExtras(b);
+                startActivity(intent);
+                finish();//Desbloquea finish cuando se ejecute la edicion para recargar el componente de carga
             }
         });
         adminNotasTexto.getAdaptador().setOnItemLongClickListener(new View.OnLongClickListener() {

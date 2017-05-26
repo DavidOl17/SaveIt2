@@ -1,64 +1,88 @@
-package com.it.save.saveit;
+package com.it.save.saveit.notas.multimedia.operaciones;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.it.save.saveit.sqlite.model.CategoriaAdministradora;
+import com.it.save.saveit.R;
+import com.it.save.saveit.notas.multimedia.NotasMultimedia;
+import com.it.save.saveit.notas.multimedia.NotasMultimediaAdministradora;
+import com.it.save.saveit.notas.multimedia.NotasMultimediaClass;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.Manifest.permission_group.CAMERA;
+public class AgregarNotaMultimedia extends AppCompatActivity {
 
-public class NuevaCategoria extends AppCompatActivity {
-
-    private final int MY_PERMISSIONS = 100;
+    String categoria;
+    EditText titulo;
     private static final int CAMERA_REQUEST = 1888;
-    ImageView imgSelected;
-    Button agregar;
-    EditText txtNombreCategoria;
-    CategoriaAdministradora ca;
+    ImageView imagen;
     boolean imagenIncertadaCcorrectamente=false;
+    NotasMultimediaAdministradora na;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nueva_categoria);
-        ca=new CategoriaAdministradora(this);
-        imgSelected=(ImageView) findViewById(R.id.imgvNuevaImagen);
-        agregar=(Button)findViewById(R.id.btnAgregar);
-        txtNombreCategoria=(EditText)findViewById(R.id.txtNombreCategoria);
-        imgSelected.setOnClickListener(new View.OnClickListener() {
+        setContentView(R.layout.activity_agregar_nota_multimedia);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        na=new NotasMultimediaAdministradora(AgregarNotaMultimedia.this,categoria);
+        titulo=(EditText)findViewById(R.id.edit_nombre_nota);//Verificar nombre si falla
+        imagen=(ImageView)findViewById(R.id.imgv_seleccion_multimedia);//Verificar si falla
+        Bundle b = getIntent().getExtras();
+        categoria = "Sin categoria"; // or other values
+        if(b != null)
+            categoria = b.getString("categoria");
+        Button fab = (Button) findViewById(R.id.fab_multimedia);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(titulo.getText().length()==0)
+                {
+                    Toast.makeText(getApplicationContext(), "El campo no puede ir vacio", Toast.LENGTH_SHORT).show();
+                    titulo.setText("");
+                    titulo.setFocusable(true);
+                }
+                else if(!imagenIncertadaCcorrectamente)
+                    Toast.makeText(getApplicationContext(), "Selecciones imagen", Toast.LENGTH_SHORT).show();
+                else
+                {
+                    Bitmap bitmap = ((BitmapDrawable)imagen.getDrawable()).getBitmap();
+                    SaveImage(bitmap);
+                    na.InsertarNotaMultimedia(new NotasMultimediaClass(0,titulo.getText().toString(),categoria));
+                    Intent i = new Intent(AgregarNotaMultimedia.this,NotasMultimedia.class);
+                    Bundle b = new Bundle();
+                    b.putString("categoria",categoria);
+                    i.putExtras(b);
+                    finish();
+                    startActivity(i);
+                }
+            }
+        });
+        imagen.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 pidePermisosEscritura();
                 pidePermisosLectura();
-                AlertDialog.Builder menu = new AlertDialog.Builder(NuevaCategoria.this);
+                AlertDialog.Builder menu = new AlertDialog.Builder(AgregarNotaMultimedia.this);
                 CharSequence[] opciones = {"Elegir de galeria","Tomar foto"};
                 menu.setItems(opciones, new DialogInterface.OnClickListener() {
                     @Override
@@ -78,35 +102,17 @@ public class NuevaCategoria extends AppCompatActivity {
                 menu.create().show();
             }
         });
-        agregar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if(ca.VerificaTitulo(txtNombreCategoria.getText().toString())) {
-                    Toast.makeText(getApplicationContext(), "Ya existe categoria", Toast.LENGTH_SHORT).show();
-                    txtNombreCategoria.setText("");
-                    txtNombreCategoria.setFocusable(true);
-                }
-                else if(txtNombreCategoria.getText().length()==0)
-                {
-                    Toast.makeText(getApplicationContext(), "El campo no puede ir vacio", Toast.LENGTH_SHORT).show();
-                    txtNombreCategoria.setText("");
-                    txtNombreCategoria.setFocusable(true);
-                }
-                else if(!imagenIncertadaCcorrectamente)
-                    Toast.makeText(getApplicationContext(), "Selecciones imagen", Toast.LENGTH_SHORT).show();
-                else
-                {
-                    Bitmap bitmap = ((BitmapDrawable)imgSelected.getDrawable()).getBitmap();
-                    SaveImage(bitmap);
-                    ca.InsertarCategoria(new CategoriaClass(txtNombreCategoria.getText().toString(),-1,0));
-                    Toast.makeText(getApplicationContext(), "Agregado", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(NuevaCategoria.this,MainActivity.class);
-                    finish();
-                    startActivity(i);
-                }
-            }
-        });
     }
-
+    @Override
+    public void onBackPressed()
+    {
+        Intent i = new Intent(AgregarNotaMultimedia.this,NotasMultimedia.class);
+        Bundle b = new Bundle();
+        b.putString("categoria",categoria);
+        i.putExtras(b);
+        finish();
+        startActivity(i);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -117,7 +123,7 @@ public class NuevaCategoria extends AppCompatActivity {
                 try {
                     inputStream = getContentResolver().openInputStream(imageUri);
                     Bitmap image = BitmapFactory.decodeStream(inputStream);
-                    imgSelected.setImageBitmap(image);
+                    imagen.setImageBitmap(image);
                     imagenIncertadaCcorrectamente=true;
 
                 } catch (FileNotFoundException e) {
@@ -127,17 +133,23 @@ public class NuevaCategoria extends AppCompatActivity {
             if (requestCode == CAMERA_REQUEST)
             {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
-                imgSelected.setImageBitmap(photo);
+                imagen.setImageBitmap(photo);
                 imagenIncertadaCcorrectamente=true;
             }
         }
     }
     private void SaveImage(Bitmap finalBitmap) {
 
-        String root = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/imagenes_categorias/";
+        NotasMultimediaAdministradora a = new NotasMultimediaAdministradora(AgregarNotaMultimedia.this);
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/imagenes_multimedia/";
         File myDir = new File(root);
         myDir.mkdirs();
-        String fname = txtNombreCategoria.getText().toString();
+        int data;
+        if((a.getLasiID()+1)<0)
+            data=0;
+        else
+            data=(a.getLasiID()+1);
+        String fname = String.valueOf(data);
         File file = new File (myDir, fname);
         if (file.exists ()) file.delete ();
         try {
@@ -153,34 +165,34 @@ public class NuevaCategoria extends AppCompatActivity {
     }
     private void pidePermisosEscritura()
     {
-        if (ContextCompat.checkSelfPermission(NuevaCategoria.this,
+        if (ContextCompat.checkSelfPermission(AgregarNotaMultimedia.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(NuevaCategoria.this,
+            if (ActivityCompat.shouldShowRequestPermissionRationale(AgregarNotaMultimedia.this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE))
             {
 
             } else {
-                ActivityCompat.requestPermissions(NuevaCategoria.this,
+                ActivityCompat.requestPermissions(AgregarNotaMultimedia.this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
             }
         }
     }
     private void pidePermisosLectura()
     {
-        if (ContextCompat.checkSelfPermission(NuevaCategoria.this,
+        if (ContextCompat.checkSelfPermission(AgregarNotaMultimedia.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(NuevaCategoria.this,
+            if (ActivityCompat.shouldShowRequestPermissionRationale(AgregarNotaMultimedia.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE))
             {
 
             } else {
-                ActivityCompat.requestPermissions(NuevaCategoria.this,
+                ActivityCompat.requestPermissions(AgregarNotaMultimedia.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},0);
             }
         }

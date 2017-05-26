@@ -1,12 +1,14 @@
 package com.it.save.saveit.sqlite.model;
 
 import android.content.Context;
+import android.os.Environment;
 
 import com.it.save.saveit.AdaptadorCategorias;
 import com.it.save.saveit.CategoriaClass;
 import com.it.save.saveit.R;
 import com.it.save.saveit.sqlite.helper.DatabaseHelper;
 
+import java.io.File;
 import java.util.Vector;
 
 /**
@@ -61,6 +63,12 @@ public class CategoriaAdministradora
         String categ =CargaLibros().get(pos).getCategoria();
         if(!categ.equals("Sin categoria") && !categ.equals("Papelera de reciclaje"))
         {
+            String root = Environment.getExternalStorageDirectory().toString();
+            File imgFile = new  File(root + "/imagenes_categorias/"+categ);
+            if(imgFile.exists())
+            {
+                imgFile.delete();
+            }
             db.updateCategoriaNota(categ);
             db.deleteCategoria(CargaLibros().get(pos).getCategoria());
             db.closeDB();

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.it.save.saveit.notas.multimedia.operaciones.AgregarNotaMultimedia"
+    tools:showIn="@layout/activity_agregar_nota_multimedia">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:id="@+id/txt_titulo_multimedia"
+        android:orientation="horizontal">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/edit_nombre_nota"
+            android:textSize="28dp"
+            android:hint="Ingrese titulo"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:layout_below="@+id/txt_titulo_multimedia">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imgv_seleccion_multimedia"
+            android:src="@mipmap/no_image"
+            android:scaleType="centerCrop"/>
+    </LinearLayout>
+
+</RelativeLayout>

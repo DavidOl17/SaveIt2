@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/txt_titulo_nota_multimedia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Titulo"
+        android:layout_alignParentLeft="true"
+        android:gravity="center"
+        android:lines="2"
+        android:textColor="#000000"
+        android:textSize="18dp"
+        />
+
+    <ImageView
+        android:id="@+id/imgv_archivo_multimedia"
+        android:layout_width="234dp"
+        android:layout_height="130dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="42dp"
+        />
+
+</RelativeLayout>

@@ -33,7 +33,7 @@ public class AgregarNuevaNota extends AppCompatActivity {
         if(b != null)
             categoria = b.getString("categoria");
         notas=new NotasDeTextoAdministradora(AgregarNuevaNota.this,categoria);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_notas_texto);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

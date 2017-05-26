@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-feature android:name="android.hardware.camera" />
+
     <application
         android:name=".Categoria"
         android:allowBackup="true"
@@ -25,9 +27,20 @@
             android:label="@string/title_activity_nueva_categoria"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".notas.texto.NotasTexto" />
+        <activity android:name=".notas.texto.operaciones.EditarNota" />
+        <activity android:name=".notas.multimedia.operaciones.EditarNotaMultimedia" />
         <activity
             android:name=".notas.texto.operaciones.AgregarNuevaNota"
             android:label="@string/title_activity_agregar_nueva_nota"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".seleccion_tipo_nota.SeleccionTipoNota" />
+        <activity
+            android:name=".notas.multimedia.NotasMultimedia"
+            android:label="@string/title_activity_notas_multimedia"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".notas.multimedia.operaciones.AgregarNotaMultimedia"
+            android:label="@string/title_activity_agregar_nota_multimedia"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

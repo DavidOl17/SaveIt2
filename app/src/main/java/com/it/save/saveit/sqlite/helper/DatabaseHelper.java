@@ -5,16 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.it.save.saveit.CategoriaClass;
 import com.it.save.saveit.MainActivity;
 import com.it.save.saveit.R;
+import com.it.save.saveit.notas.multimedia.NotasMultimediaClass;
 import com.it.save.saveit.notas.texto.NotasDeTextoClass;
-//import com.it.save.saveit.notas_de_texto.NotasDeTextoClass;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -239,29 +237,33 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     public int lastID() {
         SQLiteDatabase db = this.getReadableDatabase();
-
+        int id=0;
         String selectQuery = "SELECT  * FROM " + TABLE_NOTA;
         Cursor c = db.rawQuery(selectQuery, null);
 
-        if (c != null)
+        if (c != null) {
             c.moveToLast();
 
-         int id = c.getInt(0);
+            id = c.getInt(0);
+        }
 
         return id;
     }
 
-    public NotasDeTextoClass getNotasDeTextoClass(String tituloNota) {
+    public NotasDeTextoClass getNotasDeTextoClass(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_NOTA_TEXTO + " WHERE "
-                + TITULO_NOTA + " = '" + tituloNota+"'";
+        String selectQuery = "SELECT  " + TABLE_NOTA + "." + KEY_ID + ", " + TABLE_NOTA + "." + TITULO_NOTA + ", "
+                + TABLE_NOTA_TEXTO + "." + TEXTO_CUERPO + ", "+TABLE_NOTA+"."+ID_CATEGORIA+" FROM " + TABLE_NOTA + ", " + TABLE_NOTA_TEXTO
+                + " WHERE (" + TABLE_NOTA + "." + KEY_ID + "=" + String.valueOf(id)
+                + " AND "+TABLE_NOTA+"."+TIPO+" = 0 ) AND " + TABLE_NOTA_TEXTO + "." + KEY_ID + " = "
+                + TABLE_NOTA + "." + KEY_ID + " GROUP BY " + TABLE_NOTA + "." + KEY_ID;
         Cursor c = db.rawQuery(selectQuery, null);
 
         if (c != null)
             c.moveToFirst();
 
-        NotasDeTextoClass notasDeTextoClass = new NotasDeTextoClass(c.getInt(0),tituloNota,c.getString(1));
+        NotasDeTextoClass notasDeTextoClass = new NotasDeTextoClass(c.getInt(0),c.getString(1),c.getString(2),c.getString(3));
 
         return notasDeTextoClass;
     }
@@ -271,7 +273,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
         Vector<NotasDeTextoClass> vectorNotas = new Vector<NotasDeTextoClass>();
         String selectQuery = "SELECT  " + TABLE_NOTA + "." + KEY_ID + ", " + TABLE_NOTA + "." + TITULO_NOTA + ", "
                 + TABLE_NOTA_TEXTO + "." + TEXTO_CUERPO + " FROM " + TABLE_NOTA + ", " + TABLE_NOTA_TEXTO
-                + " WHERE " + TABLE_NOTA + "." + ID_CATEGORIA + "='" + categoria + "' AND " + TABLE_NOTA_TEXTO + "." + KEY_ID + " = "
+                + " WHERE (" + TABLE_NOTA + "." + ID_CATEGORIA + "='" + categoria
+                + "' AND "+TABLE_NOTA+"."+TIPO+" = 0) AND " + TABLE_NOTA_TEXTO + "." + KEY_ID + " = "
                 + TABLE_NOTA + "." + KEY_ID + " GROUP BY " + TABLE_NOTA + "." + KEY_ID;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -284,19 +287,26 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
         return vectorNotas;
     }
-    public int updateNotaDeTexto(NotasDeTextoClass notasDeTextoClass) {
+    public boolean updateNotaDeTexto(NotasDeTextoClass notasDeTextoClass) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(TITULO_NOTA, notasDeTextoClass.getTitulo());
-        // updating row
-         db.update(TABLE_NOTA, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(notasDeTextoClass.getId())});
+        try
+        {
+            values.put(TITULO_NOTA, notasDeTextoClass.getTitulo());
+            // updating row
+            db.update(TABLE_NOTA, values, KEY_ID + " = ?",
+                    new String[] { String.valueOf(notasDeTextoClass.getId())});
 
-        values.put(TEXTO_CUERPO, notasDeTextoClass.getTexto());
-        // updating row
-        db.update(TABLE_NOTA_TEXTO, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(notasDeTextoClass.getId())});
-        return 0;
+            values = new ContentValues();
+            values.put(TEXTO_CUERPO, notasDeTextoClass.getTexto());
+            // updating row
+            db.update(TABLE_NOTA_TEXTO, values, KEY_ID + " = ?",
+                    new String[] { String.valueOf(notasDeTextoClass.getId())});
+        }catch (Exception e)
+        {
+               return false;
+        }
+        return true;
     }
     public int updateCategoriaNota(String categoria) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -325,6 +335,106 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     public int getNotasDeTextoCount(String cate)
+    {
+        int count=0;
+        try
+        {
+            String countQuery = "SELECT  * FROM " + TABLE_NOTA+" WHERE "+ID_CATEGORIA+" = '"+cate+"'";
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(countQuery, null);
+
+            count = cursor.getCount();
+            cursor.close();
+        }catch (Exception e)
+        {
+            count=0;
+        }
+
+        // return count
+        return count;
+    }
+
+    // ------------------------ Acciones para la tabla de notas de multimedia ----------------//
+
+    public long insertarNotaMultimedia(NotasMultimediaClass notasMultimediaClass) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TITULO_NOTA, notasMultimediaClass.getTitulo());
+        values.put(TIPO, 1);
+        values.put(ID_CATEGORIA, notasMultimediaClass.getCategoria());
+
+        long idObtenido = db.insert(TABLE_NOTA, null, values);
+
+        values = new ContentValues();
+        values.put(KEY_ID,lastID());
+        values.put(ELEMENTO_MM,notasMultimediaClass.getImagen());
+        idObtenido = db.insert(TABLE_NOTA_MULTIMEDIA, null, values);
+        return idObtenido;
+    }
+
+    public NotasMultimediaClass getNotasMultimedia(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  " + TABLE_NOTA + "." + KEY_ID + ", " + TABLE_NOTA + "." + TITULO_NOTA + ", "
+                +TABLE_NOTA+"."+ID_CATEGORIA+" FROM " + TABLE_NOTA + ", " + TABLE_NOTA_MULTIMEDIA
+                + " WHERE (" + TABLE_NOTA + "." + KEY_ID + "=" + String.valueOf(id)
+                + " AND "+TABLE_NOTA+"."+TIPO+" = 1 ) AND " + TABLE_NOTA_MULTIMEDIA + "." + KEY_ID + " = "
+                + TABLE_NOTA + "." + KEY_ID + " GROUP BY " + TABLE_NOTA + "." + KEY_ID;
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        NotasMultimediaClass notasMultimediaClass = new NotasMultimediaClass(c.getInt(0),c.getString(1),c.getString(2));
+
+        return notasMultimediaClass;
+    }
+
+    public Vector<NotasMultimediaClass> getTodasLasNotasMultimedia(String categoria)
+    {
+        Vector<NotasMultimediaClass> vectorNotas = new Vector<NotasMultimediaClass>();
+        String selectQuery = "SELECT  " + TABLE_NOTA + "." + KEY_ID + ", " + TABLE_NOTA + "." + TITULO_NOTA + ", "
+                + TABLE_NOTA_MULTIMEDIA + "." + ELEMENTO_MM + " FROM " + TABLE_NOTA + ", " + TABLE_NOTA_MULTIMEDIA
+                + " WHERE (" + TABLE_NOTA + "." + ID_CATEGORIA + "='" + categoria
+                + "' AND "+TABLE_NOTA+"."+TIPO+" = 1) AND " + TABLE_NOTA_MULTIMEDIA + "." + KEY_ID + " = "
+                + TABLE_NOTA + "." + KEY_ID + " GROUP BY " + TABLE_NOTA + "." + KEY_ID;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                NotasMultimediaClass notasMultimediaClass = new NotasMultimediaClass(c.getInt(0), c.getString(1), c.getString(2));
+                vectorNotas.add(notasMultimediaClass);
+            } while (c.moveToNext());
+        }
+
+        return vectorNotas;
+    }
+    public boolean updateNotaMultimedia(NotasMultimediaClass notasMultimediaClass) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        try
+        {
+            values.put(TITULO_NOTA, notasMultimediaClass.getTitulo());
+            // updating row
+            db.update(TABLE_NOTA, values, KEY_ID + " = ?",
+                    new String[] { String.valueOf(notasMultimediaClass.getId())});
+        }catch (Exception e)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void deleteNotaMultimedia(int idNotaTexto)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NOTA,  KEY_ID + " = ?",
+                new String[] { String.valueOf(idNotaTexto) });
+        db.delete(TABLE_NOTA_MULTIMEDIA, KEY_ID + " = ?",
+                new String[] { String.valueOf(idNotaTexto) });
+    }
+
+    public int getNotasMultimediaCount(String cate)
     {
         int count=0;
         try

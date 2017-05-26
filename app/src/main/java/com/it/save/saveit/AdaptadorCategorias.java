@@ -64,7 +64,7 @@ public class AdaptadorCategorias extends RecyclerView.Adapter<AdaptadorCategoria
         else
         {
             String root = Environment.getExternalStorageDirectory().toString();
-            File imgFile = new  File(root + "/imagenes_categorias/"+categoria.getCategoria()+".jpg");
+            File imgFile = new  File(root + "/imagenes_categorias/"+categoria.getCategoria());
             if(imgFile.exists())
             {
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());

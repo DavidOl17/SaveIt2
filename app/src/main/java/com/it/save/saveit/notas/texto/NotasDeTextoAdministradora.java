@@ -23,10 +23,22 @@ public class NotasDeTextoAdministradora
         notasTexto=CargaNotasDeTexto(categoria);
         adaptador=new AdaptadorNotasDeTexto(context,notasTexto);
     }
+    public NotasDeTextoAdministradora(Context context)
+    {
+        db = new DatabaseHelper(context);
+        aux=context;
+        adaptador=new AdaptadorNotasDeTexto(context,notasTexto);
+    }
     public Vector<NotasDeTextoClass> CargaNotasDeTexto(String categoria)
     {
         Vector<NotasDeTextoClass> notasDeTextoClasses;
         notasDeTextoClasses = db.getTodasLasNotasDeTexto(categoria);
+        return  notasDeTextoClasses;
+    }
+    public NotasDeTextoClass getNotaDeTexto(int id)
+    {
+        NotasDeTextoClass notasDeTextoClasses;
+        notasDeTextoClasses = db.getNotasDeTextoClass(id);
         return  notasDeTextoClasses;
     }
     public void InsertarNotaTexto(NotasDeTextoClass notasDeTextoClass)
@@ -55,6 +67,10 @@ public class NotasDeTextoAdministradora
         catch (Exception e)
         {return false;}
         return true;
+    }
+    public boolean modificarNota(NotasDeTextoClass notasDeTextoClass)
+    {
+        return db.updateNotaDeTexto(notasDeTextoClass);
     }
     public Vector<NotasDeTextoClass> getNotasTexto(){return notasTexto;}
     public AdaptadorNotasDeTexto getAdaptador(){return adaptador;}
